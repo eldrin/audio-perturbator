@@ -4,7 +4,6 @@ import tempfile
 
 import numpy as np
 import librosa
-import soundfile as sf
 import colorednoise as cn
 import pyrubberband as pyrb
 
