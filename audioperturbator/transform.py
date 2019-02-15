@@ -31,7 +31,19 @@ class BaseTransformer(object):
             numpy.ndarray: output (n_samples,)
         """
         raise NotImplementedError()
+        
 
+class Identity(BaseTransformer):
+    """Null transformer (doing nothing)
+    """
+    def __init__(self, sample_rate=22050):
+        """"""
+        super().__init__(sample_rate)
+    
+    def __call__(self, x, magnitude=0):
+        """Doing nothing"""
+        return x
+        
 
 class PitchShifter(BaseTransformer):
     """Pitch Shifter
@@ -109,9 +121,9 @@ class SoundMixer(BaseTransformer):
 
         elif len(self.other) < len(x):
             # repeat
-            rem = len(x) - len(self.other)
-            other = np.r_[self.other, self.other[:rem]]
-            y = mix(x, self.other, snr)
+            multiplier = np.ceil(len(x) / len(self.other)) 
+            other = np.repeat(self.other, multiplier)[:len(x)]
+            y = mix(x, other, snr)
 
         elif len(self.other) > len(x):
             # randomly crop
